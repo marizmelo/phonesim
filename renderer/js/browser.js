@@ -1,3 +1,29 @@
+// --- Browser History ---
+function getBrowserHistory() {
+  try {
+    return JSON.parse(localStorage.getItem('browserHistory') || '[]');
+  } catch (e) {
+    return [];
+  }
+}
+
+function addToHistory(url, title) {
+  if (!url || url === 'about:blank') return;
+  const history = getBrowserHistory();
+  // Remove existing entry for this URL
+  const filtered = history.filter(h => h.url !== url);
+  // Add to front
+  filtered.unshift({ url, title: title || url, timestamp: Date.now() });
+  // Keep max 200 entries
+  if (filtered.length > 200) filtered.length = 200;
+  localStorage.setItem('browserHistory', JSON.stringify(filtered));
+}
+
+function removeFromHistory(url) {
+  const history = getBrowserHistory().filter(h => h.url !== url);
+  localStorage.setItem('browserHistory', JSON.stringify(history));
+}
+
 function initBrowser() {
   const urlInput = document.getElementById('url-input');
   const goBtn = document.getElementById('url-go');
@@ -8,8 +34,10 @@ function initBrowser() {
   const pwaUrl = document.getElementById('pwa-url');
   const pwaAddBtn = document.getElementById('pwa-add-btn');
   const pwaDismissBtn = document.getElementById('pwa-dismiss-btn');
+  const suggestions = document.getElementById('url-suggestions');
 
   let currentPWA = null;
+  let selectedIndex = -1;
 
   function loadURL() {
     let url = urlInput.value.trim();
@@ -24,31 +52,166 @@ function initBrowser() {
     }
     webview.src = url;
     urlInput.value = url;
+    hideSuggestions();
     hidePWABanner();
   }
 
-  urlInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      loadURL();
-      urlInput.blur();
+  // --- Autocomplete ---
+  function showSuggestions(query) {
+    if (!query) { hideSuggestions(); return; }
+    const q = query.toLowerCase();
+    const history = getBrowserHistory();
+    const matches = history.filter(h => {
+      return h.url.toLowerCase().includes(q) || (h.title && h.title.toLowerCase().includes(q));
+    }).slice(0, 6);
+
+    if (matches.length === 0) { hideSuggestions(); return; }
+
+    selectedIndex = -1;
+    suggestions.innerHTML = matches.map((h, i) => {
+      const highlightedTitle = highlightMatch(h.title || '', query);
+      const displayUrl = h.url.replace(/^https?:\/\//, '');
+      return `
+        <div class="suggestion-item" data-index="${i}" data-url="${escapeHtml(h.url)}">
+          <div class="suggestion-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+            </svg>
+          </div>
+          <div class="suggestion-text">
+            <div class="suggestion-title">${highlightedTitle}</div>
+            <div class="suggestion-url">${escapeHtml(displayUrl)}</div>
+          </div>
+          <button class="suggestion-delete" data-delete-url="${escapeHtml(h.url)}" title="Remove">&times;</button>
+        </div>
+      `;
+    }).join('');
+    suggestions.classList.add('active');
+  }
+
+  function hideSuggestions() {
+    suggestions.classList.remove('active');
+    suggestions.innerHTML = '';
+    selectedIndex = -1;
+  }
+
+  function highlightMatch(text, query) {
+    const idx = text.toLowerCase().indexOf(query.toLowerCase());
+    if (idx === -1) return escapeHtml(text);
+    const before = escapeHtml(text.slice(0, idx));
+    const match = escapeHtml(text.slice(idx, idx + query.length));
+    const after = escapeHtml(text.slice(idx + query.length));
+    return `${before}<mark>${match}</mark>${after}`;
+  }
+
+  function escapeHtml(str) {
+    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  // Input events for autocomplete
+  urlInput.addEventListener('input', () => {
+    showSuggestions(urlInput.value.trim());
+  });
+
+  urlInput.addEventListener('focus', () => {
+    if (urlInput.value.trim()) {
+      showSuggestions(urlInput.value.trim());
     }
   });
 
-  goBtn.addEventListener('click', loadURL);
+  // Click outside to close
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('#url-bar')) {
+      hideSuggestions();
+    }
+  });
+
+  // Click a suggestion
+  suggestions.addEventListener('click', (e) => {
+    const deleteBtn = e.target.closest('.suggestion-delete');
+    if (deleteBtn) {
+      e.stopPropagation();
+      const url = deleteBtn.dataset.deleteUrl;
+      removeFromHistory(url);
+      showSuggestions(urlInput.value.trim());
+      return;
+    }
+    const item = e.target.closest('.suggestion-item');
+    if (item) {
+      urlInput.value = item.dataset.url;
+      hideSuggestions();
+      loadURL();
+    }
+  });
+
+  urlInput.addEventListener('keydown', (e) => {
+    const items = suggestions.querySelectorAll('.suggestion-item');
+    if (suggestions.classList.contains('active') && items.length > 0) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+        updateSelection(items);
+        return;
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        selectedIndex = Math.max(selectedIndex - 1, -1);
+        updateSelection(items);
+        return;
+      }
+      if (e.key === 'Enter' && selectedIndex >= 0) {
+        e.preventDefault();
+        urlInput.value = items[selectedIndex].dataset.url;
+        hideSuggestions();
+        loadURL();
+        urlInput.blur();
+        return;
+      }
+    }
+    if (e.key === 'Enter') {
+      hideSuggestions();
+      loadURL();
+      urlInput.blur();
+    }
+    if (e.key === 'Escape') {
+      hideSuggestions();
+    }
+  });
+
+  function updateSelection(items) {
+    items.forEach((el, i) => {
+      el.classList.toggle('selected', i === selectedIndex);
+    });
+    if (selectedIndex >= 0) {
+      urlInput.value = items[selectedIndex].dataset.url;
+    }
+  }
+
+  goBtn.addEventListener('click', () => { hideSuggestions(); loadURL(); });
 
   document.getElementById('url-refresh').addEventListener('click', () => {
     webview.reload();
   });
 
+  // Save history on navigation
   webview.addEventListener('did-navigate', (e) => {
     urlInput.value = e.url;
     hidePWABanner();
+    // Get page title for history
+    webview.executeJavaScript('document.title').then(title => {
+      addToHistory(e.url, title);
+    }).catch(() => {
+      addToHistory(e.url, '');
+    });
     detectPWA();
   });
 
   webview.addEventListener('did-navigate-in-page', (e) => {
     if (e.isMainFrame) {
       urlInput.value = e.url;
+      webview.executeJavaScript('document.title').then(title => {
+        addToHistory(e.url, title);
+      }).catch(() => {});
     }
   });
 

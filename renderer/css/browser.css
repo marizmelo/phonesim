@@ -1,5 +1,6 @@
 #view-browser {
   background: #1c1c1e;
+  position: relative;
 }
 
 body.android #view-browser {
@@ -15,6 +16,9 @@ body.android #view-browser {
   background: rgba(28,28,30,0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  position: relative;
+  z-index: 10;
+  overflow: visible;
 }
 
 #url-bar {
@@ -25,6 +29,115 @@ body.android #view-browser {
   border-radius: 10px;
   padding: 0 4px 0 12px;
   height: 36px;
+  position: relative;
+  overflow: visible;
+  z-index: 100;
+}
+
+/* URL Autocomplete Suggestions */
+#url-suggestions {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 12px;
+  right: 12px;
+  background: rgba(44, 44, 46, 0.98);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 10px;
+  overflow: hidden;
+  z-index: 100;
+  max-height: 220px;
+  overflow-y: auto;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  border: 1px solid rgba(255,255,255,0.08);
+  margin-top: 2px;
+}
+
+#url-suggestions.active {
+  display: block;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.suggestion-item:hover,
+.suggestion-item.selected {
+  background: rgba(255,255,255,0.1);
+}
+
+.suggestion-item + .suggestion-item {
+  border-top: 1px solid rgba(255,255,255,0.05);
+}
+
+.suggestion-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.4);
+}
+
+.suggestion-icon svg {
+  width: 14px;
+  height: 14px;
+}
+
+.suggestion-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.suggestion-title {
+  font-size: 13px;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.suggestion-url {
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.suggestion-title mark {
+  background: none;
+  color: #0a84ff;
+  font-weight: 600;
+}
+
+body.android .suggestion-title mark {
+  color: #8ab4f8;
+}
+
+.suggestion-delete {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.25);
+  cursor: pointer;
+  padding: 2px 4px;
+  font-size: 14px;
+  line-height: 1;
+  flex-shrink: 0;
+  border-radius: 4px;
+}
+
+.suggestion-delete:hover {
+  color: rgba(255,255,255,0.6);
+  background: rgba(255,255,255,0.08);
 }
 
 #url-input {
