@@ -1,0 +1,145 @@
+#view-settings {
+  background: #000;
+}
+
+body.android #view-settings {
+  background: #121212;
+}
+
+.app-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  flex-shrink: 0;
+}
+
+.back-btn {
+  background: none;
+  border: none;
+  color: #0a84ff;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.android .back-btn {
+  color: #8ab4f8;
+}
+
+.app-header h1 {
+  font-size: 17px;
+  font-weight: 600;
+  color: white;
+}
+
+.settings-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 16px 20px;
+}
+
+.settings-group {
+  margin-bottom: 24px;
+}
+
+.settings-group-title {
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 8px 16px;
+  margin-bottom: 4px;
+}
+
+.settings-list {
+  background: rgba(255,255,255,0.08);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.settings-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.settings-item:not(:last-child) {
+  border-bottom: 0.5px solid rgba(255,255,255,0.1);
+}
+
+.settings-item:hover {
+  background: rgba(255,255,255,0.05);
+}
+
+.settings-item:active {
+  background: rgba(255,255,255,0.1);
+}
+
+.settings-item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.settings-item-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.settings-item-icon svg {
+  width: 18px;
+  height: 18px;
+  color: white;
+}
+
+.settings-item-label {
+  font-size: 16px;
+  color: white;
+}
+
+.settings-item-value {
+  font-size: 15px;
+  color: rgba(255,255,255,0.4);
+}
+
+.settings-item-check {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.settings-item.selected .settings-item-check {
+  background: #0a84ff;
+  border-color: #0a84ff;
+}
+
+body.android .settings-item.selected .settings-item-check {
+  background: #8ab4f8;
+  border-color: #8ab4f8;
+}
+
+.settings-item-check svg {
+  width: 14px;
+  height: 14px;
+  color: white;
+  opacity: 0;
+}
+
+.settings-item.selected .settings-item-check svg {
+  opacity: 1;
+}

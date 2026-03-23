@@ -1,0 +1,259 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: transparent;
+  overflow: hidden;
+  user-select: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+#phone-frame {
+  --frame-width: 390px;
+  --frame-height: 844px;
+  --frame-radius: 55px;
+  --screen-radius: 47px;
+  --bezel-width: 4px;
+  --frame-color: #1a1a1a;
+  --screen-bg: #000;
+
+  position: relative;
+  width: var(--frame-width);
+  height: var(--frame-height);
+  background: var(--frame-color);
+  border-radius: var(--frame-radius);
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.1) inset,
+    0 20px 60px rgba(0,0,0,0.5);
+}
+
+#drag-area {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 30px;
+  z-index: 1000;
+  -webkit-app-region: drag;
+  border-radius: var(--frame-radius) var(--frame-radius) 0 0;
+}
+
+#close-btn {
+  position: absolute;
+  top: 6px;
+  right: 12px;
+  z-index: 1001;
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.4);
+  border-radius: 50%;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  -webkit-app-region: no-drag;
+}
+
+#phone-frame:hover #close-btn {
+  opacity: 1;
+}
+
+#close-btn:hover {
+  background: rgba(255,80,80,0.8);
+  color: white;
+}
+
+/* Phone screen */
+#phone-screen {
+  position: absolute;
+  top: var(--bezel-width);
+  left: var(--bezel-width);
+  right: var(--bezel-width);
+  bottom: var(--bezel-width);
+  background: var(--screen-bg);
+  border-radius: var(--screen-radius);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  -webkit-app-region: no-drag;
+}
+
+/* Notch (iPhone) */
+#notch {
+  position: absolute;
+  top: var(--bezel-width);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 126px;
+  height: 34px;
+  background: var(--frame-color);
+  border-radius: 0 0 20px 20px;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#notch-camera {
+  width: 12px;
+  height: 12px;
+  background: #1c1c1e;
+  border-radius: 50%;
+  border: 2px solid #2a2a2e;
+}
+
+body.android #notch {
+  display: none;
+}
+
+/* Punch hole (Android) */
+#punch-hole {
+  position: absolute;
+  top: calc(var(--bezel-width) + 10px);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  background: #0a0a0a;
+  border-radius: 50%;
+  border: 2px solid #1a1a1a;
+  z-index: 100;
+  display: none;
+}
+
+body.android #punch-hole {
+  display: block;
+}
+
+/* Home indicator (iOS) */
+#home-indicator {
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+#home-indicator-bar {
+  width: 134px;
+  height: 5px;
+  background: rgba(255,255,255,0.3);
+  border-radius: 3px;
+}
+
+body.android #home-indicator {
+  display: none;
+}
+
+/* Android nav bar */
+#nav-bar {
+  height: 42px;
+  display: none;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 60px;
+  flex-shrink: 0;
+}
+
+body.android #nav-bar {
+  display: flex;
+}
+
+.nav-btn {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.6);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-btn:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* Side buttons */
+#side-btn-power {
+  position: absolute;
+  right: -2px;
+  top: 160px;
+  width: 3px;
+  height: 45px;
+  background: #2a2a2a;
+  border-radius: 0 2px 2px 0;
+}
+
+#side-btn-vol-up {
+  position: absolute;
+  left: -2px;
+  top: 140px;
+  width: 3px;
+  height: 30px;
+  background: #2a2a2a;
+  border-radius: 2px 0 0 2px;
+}
+
+#side-btn-vol-down {
+  position: absolute;
+  left: -2px;
+  top: 180px;
+  width: 3px;
+  height: 30px;
+  background: #2a2a2a;
+  border-radius: 2px 0 0 2px;
+}
+
+/* Screen content */
+#screen-content {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.view {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: none;
+  flex-direction: column;
+}
+
+.view.active {
+  display: flex;
+}
+
+/* Slide transition */
+.view.slide-in {
+  display: flex;
+  animation: slideIn 0.3s ease forwards;
+}
+
+.view.slide-out {
+  display: flex;
+  animation: slideOut 0.3s ease forwards;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+@keyframes slideOut {
+  from { transform: translateX(0); }
+  to { transform: translateX(-30%); opacity: 0.5; }
+}

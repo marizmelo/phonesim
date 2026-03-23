@@ -1,0 +1,12 @@
+{
+  "name": "phonesim",
+  "version": "1.0.0",
+  "description": "Phone simulator Electron app",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^41.0.0"
+  }
+}

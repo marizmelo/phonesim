@@ -1,0 +1,73 @@
+#status-bar {
+  height: 54px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 0 24px 8px;
+  color: white;
+  font-size: 15px;
+  font-weight: 600;
+  flex-shrink: 0;
+  z-index: 50;
+}
+
+#status-left {
+  display: flex;
+  align-items: center;
+}
+
+#status-time {
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+#status-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#status-signal,
+#status-wifi {
+  color: white;
+}
+
+#status-battery {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+}
+
+#battery-body {
+  width: 25px;
+  height: 12px;
+  border: 1.5px solid white;
+  border-radius: 3px;
+  padding: 1px;
+  position: relative;
+}
+
+#battery-level {
+  width: 80%;
+  height: 100%;
+  background: white;
+  border-radius: 1px;
+}
+
+#battery-tip {
+  width: 2px;
+  height: 5px;
+  background: white;
+  border-radius: 0 1px 1px 0;
+}
+
+/* Android status bar adjustments */
+body.android #status-bar {
+  height: 40px;
+  padding: 0 16px 6px;
+}
+
+body.android #status-time {
+  font-weight: 400;
+  font-size: 14px;
+}
