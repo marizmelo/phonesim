@@ -12,11 +12,9 @@
 </head>
 <body>
   <div id="phone-frame">
-    <!-- Drag area at top of phone -->
-    <div id="drag-area"></div>
 
-    <!-- Close button -->
-    <button id="close-btn" title="Close">&times;</button>
+    <!-- Drag zone over top bezel -->
+    <div id="drag-zone"></div>
 
     <!-- iPhone notch -->
     <div id="notch">
@@ -60,16 +58,18 @@
         <div id="view-homescreen" class="view active">
           <div id="homescreen-wallpaper"></div>
           <div id="app-grid">
-            <div class="app-icon" data-app="settings">
+          </div>
+          <!-- iOS dock -->
+          <div id="dock">
+            <div class="dock-icon" data-app="settings">
               <div class="app-icon-image settings-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5">
                   <path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/>
                   <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 008.43 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 8.43a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/>
                 </svg>
               </div>
-              <span class="app-label">Settings</span>
             </div>
-            <div class="app-icon" data-app="browser">
+            <div class="dock-icon" data-app="browser">
               <div class="app-icon-image browser-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.5">
                   <circle cx="12" cy="12" r="10"/>
@@ -77,11 +77,8 @@
                   <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/>
                 </svg>
               </div>
-              <span class="app-label">Browser</span>
             </div>
           </div>
-          <!-- iOS dock -->
-          <div id="dock"></div>
         </div>
 
         <!-- Settings View -->
@@ -98,6 +95,12 @@
             <div class="settings-group">
               <div class="settings-group-title">Phone Design</div>
               <div class="settings-list" id="design-list">
+                <!-- Populated by settings.js -->
+              </div>
+            </div>
+            <div class="settings-group">
+              <div class="settings-group-title">Display Size</div>
+              <div class="settings-list" id="size-list">
                 <!-- Populated by settings.js -->
               </div>
             </div>
@@ -120,6 +123,22 @@
                 </svg>
               </button>
             </div>
+            <button id="url-refresh">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M23 4v6h-6" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+          <!-- PWA Install Banner -->
+          <div id="pwa-banner" class="hidden">
+            <img id="pwa-icon" src="" alt="">
+            <div id="pwa-info">
+              <div id="pwa-name"></div>
+              <div id="pwa-url"></div>
+            </div>
+            <button id="pwa-add-btn">Add</button>
+            <button id="pwa-dismiss-btn">&times;</button>
           </div>
           <div id="browser-content">
             <webview id="browser-webview" src="about:blank" allowpopups></webview>

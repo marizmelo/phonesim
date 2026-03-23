@@ -21,6 +21,7 @@ function navigateTo(viewName) {
 }
 
 function navigateBack() {
+  if (typeof exitPWAMode === 'function') exitPWAMode();
   navigateTo('homescreen');
 }
 
@@ -30,13 +31,15 @@ function applyDesign(designKey) {
   if (!design) return;
 
   const frame = document.getElementById('phone-frame');
+  const sizeKey = localStorage.getItem('phoneSize') || 'medium';
+  const scale = PHONE_SIZES[sizeKey]?.scale || 1.0;
 
-  // Update CSS custom properties
-  frame.style.setProperty('--frame-width', design.frameWidth + 'px');
-  frame.style.setProperty('--frame-height', design.frameHeight + 'px');
-  frame.style.setProperty('--frame-radius', design.frameRadius + 'px');
-  frame.style.setProperty('--screen-radius', design.screenRadius + 'px');
-  frame.style.setProperty('--bezel-width', design.bezelWidth + 'px');
+  // Update CSS custom properties with scale
+  frame.style.setProperty('--frame-width', Math.round(design.frameWidth * scale) + 'px');
+  frame.style.setProperty('--frame-height', Math.round(design.frameHeight * scale) + 'px');
+  frame.style.setProperty('--frame-radius', Math.round(design.frameRadius * scale) + 'px');
+  frame.style.setProperty('--screen-radius', Math.round(design.screenRadius * scale) + 'px');
+  frame.style.setProperty('--bezel-width', Math.round(design.bezelWidth * scale) + 'px');
   frame.style.setProperty('--frame-color', design.frameColor);
 
   // Update wallpaper
@@ -54,7 +57,10 @@ function applyDesign(designKey) {
 
   // Resize electron window
   if (window.phoneSim) {
-    window.phoneSim.resizeWindow(design.width, design.height);
+    window.phoneSim.resizeWindow(
+      Math.round(design.width * scale),
+      Math.round(design.height * scale)
+    );
   }
 
   // Save preference
@@ -62,6 +68,13 @@ function applyDesign(designKey) {
 
   // Update status bar time format
   updateStatusBarTime();
+}
+
+// Apply display size
+function applySize(sizeKey) {
+  localStorage.setItem('phoneSize', sizeKey);
+  const currentDesign = localStorage.getItem('phoneDesign') || 'iphone';
+  applyDesign(currentDesign);
 }
 
 // Initialize
@@ -79,19 +92,45 @@ document.addEventListener('DOMContentLoaded', () => {
   // Back buttons
   document.querySelectorAll('.back-btn[data-back]').forEach(btn => {
     btn.addEventListener('click', () => {
+      if (typeof exitPWAMode === 'function') exitPWAMode();
       navigateTo(btn.dataset.back);
     });
   });
 
-  // Close button
-  document.getElementById('close-btn').addEventListener('click', () => {
-    if (window.phoneSim) {
-      window.phoneSim.closeApp();
+  // Drag zone - manual window dragging
+  const dragZone = document.getElementById('drag-zone');
+  let dragging = false;
+  let dragStartX, dragStartY;
+
+  dragZone.addEventListener('mousedown', (e) => {
+    dragging = true;
+    const [winX, winY] = window.phoneSim.getPosition();
+    dragStartX = e.screenX - winX;
+    dragStartY = e.screenY - winY;
+    dragZone.style.cursor = 'grabbing';
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!dragging) return;
+    window.phoneSim.moveWindow(e.screenX - dragStartX, e.screenY - dragStartY);
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (dragging) {
+      dragging = false;
+      dragZone.style.cursor = 'grab';
     }
+  });
+
+  // iOS home indicator — tap to go home
+  document.getElementById('home-indicator').addEventListener('click', () => {
+    if (typeof exitPWAMode === 'function') exitPWAMode();
+    navigateTo('homescreen');
   });
 
   // Android nav buttons
   document.getElementById('nav-home').addEventListener('click', () => {
+    if (typeof exitPWAMode === 'function') exitPWAMode();
     navigateTo('homescreen');
   });
 
@@ -105,6 +144,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     navigateBack();
   });
+
+  // Cmd/Ctrl+R to refresh webview when browser/PWA is active
+  if (window.phoneSim?.onRefresh) {
+    window.phoneSim.onRefresh(() => {
+      if (currentView === 'browser') {
+        document.getElementById('browser-webview').reload();
+      }
+    });
+  }
 
   // Load saved design
   const savedDesign = localStorage.getItem('phoneDesign') || 'iphone';

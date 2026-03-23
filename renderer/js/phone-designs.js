@@ -2,8 +2,8 @@ const PHONE_DESIGNS = {
   iphone: {
     name: 'iPhone 15',
     os: 'ios',
-    width: 398,
-    height: 852,
+    width: 410,
+    height: 880,
     frameWidth: 390,
     frameHeight: 844,
     frameRadius: 55,
@@ -19,8 +19,8 @@ const PHONE_DESIGNS = {
   android: {
     name: 'Android Phone',
     os: 'android',
-    width: 398,
-    height: 852,
+    width: 410,
+    height: 880,
     frameWidth: 390,
     frameHeight: 844,
     frameRadius: 40,
@@ -33,4 +33,10 @@ const PHONE_DESIGNS = {
     navBar: true,
     wallpaper: 'linear-gradient(145deg, #1b1b2f 0%, #162447 40%, #1f4068 70%, #e43f5a 100%)'
   }
+};
+
+const PHONE_SIZES = {
+  small:  { name: 'Small',  scale: 0.75 },
+  medium: { name: 'Medium', scale: 1.0  },
+  large:  { name: 'Large',  scale: 1.25 }
 };

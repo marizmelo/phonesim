@@ -61,6 +61,123 @@ body.android #url-go {
   color: #8ab4f8;
 }
 
+#url-refresh {
+  background: none;
+  border: none;
+  color: #0a84ff;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+#url-refresh:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+body.android #url-refresh {
+  color: #8ab4f8;
+}
+
+/* PWA Install Banner */
+#pwa-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(44, 44, 46, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  animation: pwa-slide-down 0.3s ease-out;
+}
+
+#pwa-banner.hidden {
+  display: none;
+}
+
+@keyframes pwa-slide-down {
+  from { transform: translateY(-100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+#pwa-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.1);
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+body.android #pwa-icon {
+  border-radius: 50%;
+}
+
+#pwa-info {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+#pwa-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: white;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#pwa-url {
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#pwa-add-btn {
+  background: #0a84ff;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s;
+}
+
+#pwa-add-btn:hover {
+  background: #409cff;
+}
+
+body.android #pwa-add-btn {
+  background: #8ab4f8;
+  color: #1e1e1e;
+  border-radius: 18px;
+}
+
+#pwa-dismiss-btn {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.4);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 2px 4px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+#pwa-dismiss-btn:hover {
+  color: rgba(255,255,255,0.7);
+}
+
 #browser-content {
   flex: 1;
   position: relative;

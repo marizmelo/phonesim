@@ -1,5 +1,6 @@
 function initSettings() {
   renderDesignList();
+  renderSizeList();
 }
 
 function renderDesignList() {
@@ -24,6 +25,33 @@ function renderDesignList() {
     item.addEventListener('click', () => {
       applyDesign(key);
       renderDesignList();
+    });
+    list.appendChild(item);
+  });
+}
+
+function renderSizeList() {
+  const list = document.getElementById('size-list');
+  const currentSize = localStorage.getItem('phoneSize') || 'medium';
+
+  list.innerHTML = '';
+
+  Object.entries(PHONE_SIZES).forEach(([key, size]) => {
+    const item = document.createElement('div');
+    item.className = 'settings-item' + (key === currentSize ? ' selected' : '');
+    item.innerHTML = `
+      <div class="settings-item-left">
+        <span class="settings-item-label">${size.name}</span>
+      </div>
+      <div class="settings-item-check">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+          <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    `;
+    item.addEventListener('click', () => {
+      applySize(key);
+      renderSizeList();
     });
     list.appendChild(item);
   });
