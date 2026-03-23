@@ -104,6 +104,29 @@
                 <!-- Populated by settings.js -->
               </div>
             </div>
+            <div class="settings-group">
+              <div class="settings-group-title">Data</div>
+              <div class="settings-list">
+                <div class="settings-item" id="erase-data-btn">
+                  <div class="settings-item-left">
+                    <span class="settings-item-label" style="color: #ff453a;">Erase My Data</span>
+                  </div>
+                </div>
+              </div>
+              <div class="settings-group-hint">Removes all installed apps and browser history.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Erase Confirmation Dialog -->
+        <div id="erase-dialog" class="dialog-overlay hidden">
+          <div class="dialog-box">
+            <div class="dialog-title">Erase My Data?</div>
+            <div class="dialog-message">This will remove all installed apps and clear your browser history. This cannot be undone.</div>
+            <div class="dialog-buttons">
+              <button class="dialog-btn dialog-btn-cancel" id="erase-cancel">Cancel</button>
+              <button class="dialog-btn dialog-btn-destructive" id="erase-confirm">Erase</button>
+            </div>
           </div>
         </div>
 

@@ -1,6 +1,31 @@
 function initSettings() {
   renderDesignList();
   renderSizeList();
+
+  // Erase data
+  const eraseDialog = document.getElementById('erase-dialog');
+
+  document.getElementById('erase-data-btn').addEventListener('click', () => {
+    eraseDialog.classList.remove('hidden');
+  });
+
+  document.getElementById('erase-cancel').addEventListener('click', () => {
+    eraseDialog.classList.add('hidden');
+  });
+
+  document.getElementById('erase-confirm').addEventListener('click', () => {
+    localStorage.removeItem('installedPWAs');
+    localStorage.removeItem('browserHistory');
+    renderPWAApps();
+    eraseDialog.classList.add('hidden');
+  });
+
+  // Close dialog on overlay click
+  eraseDialog.addEventListener('click', (e) => {
+    if (e.target === eraseDialog) {
+      eraseDialog.classList.add('hidden');
+    }
+  });
 }
 
 function renderDesignList() {
